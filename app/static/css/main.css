@@ -15,7 +15,8 @@
     --border-radius: 8px;
     --border-radius-lg: 12px;
     --transition: all 0.5s ease;
-    /* שינוי מ-0.3s ל-0.5s */
+    --sidebar-transition: all 1.2s ease;
+    /* הגדלה מ-0.8s ל-1.2s */
 }
 
 body {
@@ -29,18 +30,18 @@ body {
 .header {
     position: fixed;
     top: 0;
-    right: var(--sidebar-width);
-    left: 0;
+    left: var(--sidebar-width);
+    right: 0;
     height: var(--header-height);
     background: var(--header-bg);
     border-bottom: 1px solid var(--border-color);
     z-index: 1000;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: right var(--transition);
+    transition: left var(--sidebar-transition);
 }
 
 .header.collapsed {
-    right: 70px;
+    left: 70px;
 }
 
 .header-content {
@@ -97,7 +98,8 @@ body {
 .theme-dropdown {
     position: absolute;
     top: calc(100% + 8px);
-    left: 0;
+    right: 0;
+    left: auto;
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
@@ -124,7 +126,7 @@ body {
     border-radius: var(--border-radius);
     cursor: pointer;
     color: var(--text-primary);
-    text-align: right;
+    text-align: left;
     width: 100%;
     transition: var(--transition);
     font-size: 14px;
@@ -180,15 +182,16 @@ body {
 /* Sidebar */
 .sidebar {
     position: fixed;
-    right: 0;
+    left: 0;
     top: 0;
     width: var(--sidebar-width);
     height: 100vh;
     background: var(--sidebar-bg);
-    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
     overflow-y: auto;
     z-index: 100;
-    transition: width var(--transition);
+    transition: width var(--sidebar-transition), transform var(--sidebar-transition);
+    /* הוספת transform */
     display: flex;
     flex-direction: column;
 }
@@ -223,7 +226,7 @@ body {
 }
 
 .sidebar.collapsed .btn-sidebar-toggle {
-    margin-right: 0;
+    margin-left: 0;
 }
 
 .sidebar.collapsed {
@@ -253,8 +256,9 @@ body {
     color: var(--text-secondary);
     text-decoration: none;
     transition: var(--transition);
-    border-right: 3px solid transparent;
+    border-left: 3px solid transparent;
     margin: 0px 10px 0px 10px;
+    text-align: left;
 }
 
 .nav-item:hover {
@@ -264,7 +268,7 @@ body {
 
 .nav-item.active {
     background: var(--accent-bg);
-    border-right: 1px solid var(--accent-color);
+    border-left: 2px solid var(--accent-color);
     border-radius: 4px;
     font-weight: 700;
 }
@@ -296,17 +300,17 @@ body {
 
 /* Main Content */
 .main-content {
-    margin-right: var(--sidebar-width);
+    margin-left: var(--sidebar-width);
     margin-top: var(--header-height);
     padding: var(--spacing-xl);
     width: 100%;
     background: var(--content-bg);
     min-height: calc(100vh - var(--header-height));
-    transition: margin-right var(--transition);
+    transition: margin-left var(--sidebar-transition);
 }
 
 body.sidebar-collapsed .main-content {
-    margin-right: 70px;
+    margin-left: 70px;
 }
 
 /* Cards */
@@ -391,7 +395,7 @@ h3 {
 .table th,
 .table td {
     padding: var(--spacing-md);
-    text-align: right;
+    text-align: left;
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -460,28 +464,30 @@ h3 {
     }
 
     .header {
-        right: 200px;
+        left: 200px;
     }
 
     .main-content {
-        margin-right: 200px;
+        margin-left: 200px;
     }
 
     body.sidebar-collapsed .main-content {
-        margin-right: 70px;
+        margin-left: 70px;
     }
 
     .header.collapsed {
-        right: 70px;
+        left: 70px;
     }
 }
 
 /* Responsive - Mobile */
 @media (max-width: 768px) {
     .sidebar {
-        transform: translateX(100%);
-        transition: transform var(--transition), width var(--transition);
+        transform: translateX(-100%);
+        transition: transform var(--sidebar-transition), width var(--sidebar-transition);
         width: var(--sidebar-width);
+        left: 0;
+        right: auto;
     }
 
     .sidebar.open {
@@ -489,7 +495,7 @@ h3 {
     }
 
     .sidebar.collapsed {
-        transform: translateX(100%);
+        transform: translateX(-100%);
     }
 
     .sidebar.collapsed.open {
@@ -498,22 +504,22 @@ h3 {
     }
 
     .header {
-        right: 0;
         left: 0;
+        right: 0;
     }
 
     .header.collapsed {
-        right: 0;
+        left: 0;
     }
 
     .main-content {
-        margin-right: 0;
+        margin-left: 0;
         margin-top: var(--header-height);
         padding: var(--spacing-md);
     }
 
     body.sidebar-collapsed .main-content {
-        margin-right: 0;
+        margin-left: 0;
     }
 
     .sidebar-header {
@@ -532,7 +538,6 @@ h3 {
 
     .header-content {
         justify-content: space-between;
-        /* כפתור משמאל, controls מימין */
     }
 
     .btn-mobile-menu {

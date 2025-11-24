@@ -61,13 +61,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Language Toggle (רק UI בשלב זה)
-  const langToggle = document.getElementById("lang-toggle");
-  langToggle.addEventListener("click", function () {
-    // בעתיד: לוגיקה אמיתית לשינוי שפה
-    console.log("Language toggle clicked");
-  });
-
   // Sidebar Toggle
   const sidebarToggle = document.getElementById("sidebar-toggle");
   const sidebar = document.getElementById("sidebar");
