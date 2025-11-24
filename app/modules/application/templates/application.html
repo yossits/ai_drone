@@ -13,27 +13,27 @@
         <div style="display: flex; flex-direction: column; gap: 16px;">
             <div>
                 <label style="display: block; margin-bottom: 8px; font-weight: 500;">שם האפליקציה</label>
-                <input type="text" value="{{ app_name }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);" readonly>
+                <input type="text" class="app-input" value="{{ app_name }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);" readonly>
             </div>
 
             <div>
                 <label style="display: block; margin-bottom: 8px; font-weight: 500;">גרסה</label>
-                <input type="text" value="{{ version }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);" readonly>
+                <input type="text" class="app-input" value="{{ version }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);" readonly>
             </div>
 
             <div>
                 <label style="display: block; margin-bottom: 8px; font-weight: 500;">תאריך בנייה</label>
-                <input type="text" value="{{ build_date }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);" readonly>
+                <input type="text" class="app-input" value="{{ build_date }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);" readonly>
             </div>
 
             <div>
                 <label style="display: block; margin-bottom: 8px; font-weight: 500;">גרסת Python</label>
-                <input type="text" value="{{ python_version }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);" readonly>
+                <input type="text" class="app-input" value="{{ python_version }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);" readonly>
             </div>
 
             <div>
                 <label style="display: block; margin-bottom: 8px; font-weight: 500;">גרסת FastAPI</label>
-                <input type="text" value="{{ fastapi_version }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);" readonly>
+                <input type="text" class="app-input" value="{{ fastapi_version }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);" readonly>
             </div>
         </div>
     </div>
@@ -45,9 +45,9 @@
     </div>
     <div class="card-body">
         <div style="display: flex; flex-direction: column; gap: 16px;">
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--hover-bg); border-radius: 4px;">
+            <div class="app-setting-row" style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--hover-bg); border-radius: 4px;">
                 <label style="font-weight: 500;">הפעל אוטומטית בעת הפעלה</label>
-                <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                <label style="position: relative; display: inline-block; width: 50px; height: 24px; flex-shrink: 0;">
                     <input type="checkbox" {% if auto_start %}checked{% endif %} style="opacity: 0; width: 0; height: 0;">
                     <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: {% if auto_start %}#28a745{% else %}#ccc{% endif %}; border-radius: 24px; transition: 0.3s;">
                         <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: 0.3s; transform: {% if auto_start %}translateX(26px){% else %}translateX(0){% endif %}"></span>
@@ -57,7 +57,7 @@
 
             <div>
                 <label style="display: block; margin-bottom: 8px; font-weight: 500;">רמת לוג</label>
-                <select style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);">
+                <select class="app-select" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);">
                     <option value="DEBUG" {% if log_level == 'DEBUG' %}selected{% endif %}>DEBUG</option>
                     <option value="INFO" {% if log_level == 'INFO' %}selected{% endif %}>INFO</option>
                     <option value="WARNING" {% if log_level == 'WARNING' %}selected{% endif %}>WARNING</option>
@@ -67,7 +67,7 @@
 
             <div>
                 <label style="display: block; margin-bottom: 8px; font-weight: 500;">גודל מקסימלי של לוג</label>
-                <input type="text" value="{{ max_log_size }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);" readonly>
+                <input type="text" class="app-input" value="{{ max_log_size }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);" readonly>
             </div>
         </div>
     </div>

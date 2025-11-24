@@ -90,29 +90,39 @@ document.addEventListener("DOMContentLoaded", function () {
       
       console.log("Toggle button clicked");
       
-      sidebar.classList.toggle("collapsed");
-      document.body.classList.toggle("sidebar-collapsed");
+      // בדיקה אם זה מובייל
+      const isMobile = window.innerWidth <= 768;
       
-      // שמירת מצב ב-localStorage
-      const isCollapsed = sidebar.classList.contains("collapsed");
-      localStorage.setItem("sidebarCollapsed", isCollapsed);
-      
-      // עדכון header
-      const header = document.querySelector(".header");
-      if (header) {
-        if (isCollapsed) {
-          header.classList.add("collapsed");
-        } else {
-          header.classList.remove("collapsed");
+      if (isMobile) {
+        // במובייל - פתיחה/סגירה עם class "open"
+        sidebar.classList.toggle("open");
+      } else {
+        // בדסקטופ - כיווץ/הרחבה
+        sidebar.classList.toggle("collapsed");
+        document.body.classList.toggle("sidebar-collapsed");
+        
+        // עדכון header
+        const header = document.querySelector(".header");
+        if (header) {
+          const isCollapsed = sidebar.classList.contains("collapsed");
+          if (isCollapsed) {
+            header.classList.add("collapsed");
+          } else {
+            header.classList.remove("collapsed");
+          }
         }
+        
+        // שמירת מצב ב-localStorage
+        const isCollapsed = sidebar.classList.contains("collapsed");
+        localStorage.setItem("sidebarCollapsed", isCollapsed);
       }
       
-      console.log("Sidebar collapsed:", isCollapsed);
+      console.log("Sidebar toggled, mobile:", isMobile);
     }
 
-    // טעינת מצב שמור
+    // טעינת מצב שמור (רק בדסקטופ)
     const savedState = localStorage.getItem("sidebarCollapsed");
-    if (savedState === "true") {
+    if (savedState === "true" && window.innerWidth > 768) {
       sidebar.classList.add("collapsed");
       document.body.classList.add("sidebar-collapsed");
       const header = document.querySelector(".header");
@@ -125,7 +135,26 @@ document.addEventListener("DOMContentLoaded", function () {
     // הוספת event listener לכפתור
     sidebarToggle.addEventListener("click", toggleSidebar);
     console.log("Event listener added to sidebar toggle");
+    
+    // במובייל - סגירת sidebar בלחיצה מחוץ לו
+    if (window.innerWidth <= 768) {
+      document.addEventListener("click", function(e) {
+        if (sidebar && !sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+          sidebar.classList.remove("open");
+        }
+      });
+    }
   } else {
     console.error("Failed to initialize sidebar toggle - missing elements");
+  }
+
+  // Mobile Menu Toggle
+  const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
+  if (mobileMenuToggle && sidebar) {
+    mobileMenuToggle.addEventListener("click", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      sidebar.classList.toggle("open");
+    });
   }
 });

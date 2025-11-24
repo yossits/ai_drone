@@ -10,41 +10,43 @@
         <h2 class="card-title">חיבורי רשת</h2>
     </div>
     <div class="card-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>שם רשת</th>
-                    <th>סוג</th>
-                    <th>סטטוס</th>
-                    <th>עוצמת אות</th>
-                    <th>כתובת IP</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for network in networks %}
-                <tr>
-                    <td><strong>{{ network.name }}</strong></td>
-                    <td>{{ network.type }}</td>
-                    <td>
-                        <span class="badge {% if network.status == 'Connected' %}badge-success{% else %}badge-danger{% endif %}">
-                            {{ network.status }}
-                        </span>
-                    </td>
-                    <td>
-                        {% if network.signal > 0 %}
-                            {{ network.signal }}%
-                            <div style="width: 100px; height: 8px; background: #e9ecef; border-radius: 4px; display: inline-block; margin-right: 8px;">
-                                <div style="width: {{ network.signal }}%; height: 100%; background: #28a745; border-radius: 4px;"></div>
-                            </div>
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>{{ network.ip }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>שם רשת</th>
+                        <th>סוג</th>
+                        <th>סטטוס</th>
+                        <th>עוצמת אות</th>
+                        <th>כתובת IP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for network in networks %}
+                    <tr>
+                        <td><strong>{{ network.name }}</strong></td>
+                        <td>{{ network.type }}</td>
+                        <td>
+                            <span class="badge {% if network.status == 'Connected' %}badge-success{% else %}badge-danger{% endif %}">
+                                {{ network.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if network.signal > 0 %}
+                                {{ network.signal }}%
+                                <div style="width: 100px; height: 8px; background: #e9ecef; border-radius: 4px; display: inline-block; margin-right: 8px;">
+                                    <div style="width: {{ network.signal }}%; height: 100%; background: #28a745; border-radius: 4px;"></div>
+                                </div>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>{{ network.ip }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
