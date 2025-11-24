@@ -189,9 +189,11 @@ body {
 }
 
 .nav-icon {
-    font-size: 18px;
     width: 24px;
-    text-align: center;
+    height: 24px;
+    display: inline-block;
+    flex-shrink: 0;
+    object-fit: contain;
 }
 
 .nav-text {
