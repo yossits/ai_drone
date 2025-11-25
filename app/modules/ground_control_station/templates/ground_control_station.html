@@ -10,11 +10,11 @@
             <h2 class="card-title">לוגים</h2>
         </div>
         <div class="card-body">
-            <div style="background: #1a1a1a; color: #00ff00; padding: 16px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px; max-height: 400px; overflow-y: auto;">
+            <div class="log-container">
                 {% for log in logs %}
-                <div style="margin-bottom: 8px;">
-                    <span style="color: #888;">[{{ log.time }}]</span>
-                    <span style="color: {% if log.level == 'INFO' %}#00ff00{% elif log.level == 'WARNING' %}#ffaa00{% else %}#ff0000{% endif %};">
+                <div class="log-entry">
+                    <span class="log-time">[{{ log.time }}]</span>
+                    <span class="{% if log.level == 'INFO' %}log-level-info{% elif log.level == 'WARNING' %}log-level-warning{% elif log.level == 'ERROR' %}log-level-error{% else %}log-level-debug{% endif %}">
                         [{{ log.level }}]
                     </span>
                     <span>{{ log.message }}</span>
@@ -29,14 +29,14 @@
             <h2 class="card-title">פקודות זמינות</h2>
         </div>
         <div class="card-body">
-            <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div class="form-container tight">
                 {% for cmd in commands %}
-                <button style="padding: 10px; background: var(--accent-color); color: white; border: none; border-radius: 4px; cursor: pointer; text-align: center;">
+                <button class="btn btn-primary btn-full-width btn-no-margin">
                     {{ cmd }}
                 </button>
                 {% endfor %}
             </div>
-            <p style="margin-top: 16px; font-size: 12px; color: var(--text-secondary);">
+            <p class="text-muted">
                 <em>כפתורים אלה יהיו פעילים בעתיד עם חיבור אמיתי לרחפן.</em>
             </p>
         </div>

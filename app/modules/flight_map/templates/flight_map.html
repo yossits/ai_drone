@@ -9,13 +9,13 @@
         <h2 class="card-title">מפת טיסה</h2>
     </div>
     <div class="card-body">
-        <div style="width: 100%; height: 600px; background: #f0f0f0; border: 2px dashed #ccc; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666;">
-            <div style="text-align: center;">
-                <p style="font-size: 18px; margin-bottom: 10px;">🗺️</p>
-                <p><strong>כאן תוצג מפת הטיסה בעתיד</strong></p>
-                <p style="font-size: 12px; margin-top: 10px;">מיקום נוכחי: {{ current_lat }}, {{ current_lon }}</p>
-                <p style="font-size: 12px;">מיקום בית: {{ home_lat }}, {{ home_lon }}</p>
-                <p style="font-size: 12px;">גובה: {{ altitude }} מטר | כיוון: {{ heading }}°</p>
+        <div class="placeholder-container map">
+            <div class="placeholder-content">
+                <p class="placeholder-icon">🗺️</p>
+                <p class="placeholder-title"><strong>כאן תוצג מפת הטיסה בעתיד</strong></p>
+                <p class="placeholder-subtitle">מיקום נוכחי: {{ current_lat }}, {{ current_lon }}</p>
+                <p class="placeholder-subtitle">מיקום בית: {{ home_lat }}, {{ home_lon }}</p>
+                <p class="placeholder-subtitle">גובה: {{ altitude }} מטר | כיוון: {{ heading }}°</p>
             </div>
         </div>
     </div>

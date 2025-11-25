@@ -2,37 +2,76 @@
 endblock %} {% block content %}
 
 <div class="grid grid-3">
-  <div class="card">
+  <div class="card" data-ws-topic="system_info">
     <div class="card-header">
-      <h3 class="card-title">מצב מערכת</h3>
+      <h3 class="card-title">System Information</h3>
     </div>
     <div class="card-body">
-      <p>
-        <strong>סטטוס:</strong>
-        <span class="badge badge-success">{{ system_status }}</span>
-      </p>
-      <p><strong>עדכון אחרון:</strong> {{ last_update }}</p>
+      <div class="form-group">
+        <label class="form-label">Operating System:</label>
+        <div class="info-box" data-ws-field="os_name">{{ os_name }}</div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Hardware:</label>
+        <div class="info-box" data-ws-field="hardware">{{ hardware }}</div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Uptime:</label>
+        <div class="info-box" data-ws-field="uptime">{{ uptime }}</div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">CPU Temperature:</label>
+        <div class="progress-bar-row">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="progress-bar-icon"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
+          <div class="progress-bar progress-bar-temp" 
+               style="--temp-fill: {{ cpu_temp_percent }}%;" 
+               data-ws-field="cpu_temp_percent"
+               data-ws-field-class="temp_class">
+            <div class="progress-bar-mask"></div>
+          </div>
+          <span class="progress-bar-value" data-ws-field="cpu_temp">{{ cpu_temp }}°C</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">CPU Usage:</label>
+        <div class="progress-bar-row">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="progress-bar-icon"><path d="M12 20v2"/><path d="M12 2v2"/><path d="M17 20v2"/><path d="M17 2v2"/><path d="M2 12h2"/><path d="M2 17h2"/><path d="M2 7h2"/><path d="M20 12h2"/><path d="M20 17h2"/><path d="M20 7h2"/><path d="M7 20v2"/><path d="M7 2v2"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>
+          <div class="progress-bar progress-bar-cpu" 
+               style="--fill-percent: {{ cpu_usage }}%;" 
+               data-ws-field="cpu_usage">
+            <div class="progress-bar-mask"></div>
+          </div>
+          <span class="progress-bar-value" data-ws-field="cpu_usage">{{ cpu_usage }}%</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">RAM Usage:</label>
+        <div class="progress-bar-row">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="progress-bar-icon"><path d="M18 12h2"/><path d="M18 16h2"/><path d="M18 20h2"/><path d="M18 4h2"/><path d="M18 8h2"/><path d="M4 12h2"/><path d="M4 16h2"/><path d="M4 20h2"/><path d="M4 4h2"/><path d="M4 8h2"/><path d="M8 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-1.5c-.276 0-.494.227-.562.495a2 2 0 0 1-3.876 0C9.994 2.227 9.776 2 9.5 2z"/></svg>
+          <div class="progress-bar progress-bar-ram" 
+               style="--fill-percent: {{ ram_percent }}%;" 
+               data-ws-field="ram_percent">
+            <div class="progress-bar-mask"></div>
+          </div>
+          <span class="progress-bar-value" data-ws-field="ram_used">{{ ram_used }}</span>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-header">
-      <h3 class="card-title">מצב סוללה</h3>
+      <h3 class="card-title">Battery</h3>
     </div>
     <div class="card-body">
-      <p><strong>רמת סוללה:</strong> {{ battery_level }}%</p>
-      <div
-        style="
-          width: 100%;
-          height: 20px;
-          background: #e9ecef;
-          border-radius: 10px;
-          margin-top: 8px;
-        "
-      >
-        <div
-          style="width: {{ battery_level }}%; height: 100%; background: #28a745; border-radius: 10px;"
-        ></div>
+      <p><strong>Battery Level:</strong> {{ battery_level }}%</p>
+      <div class="progress-bar progress-bar-success">
+        <div class="progress-bar-fill" style="width: {{ battery_level }}%;"></div>
       </div>
     </div>
   </div>
@@ -80,4 +119,32 @@ endblock %} {% block content %}
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // יצירת WebSocketClient instance
+  const wsClient = new WebSocketClient("/ws/system_info", ["system_info"]);
+  
+  // הגדרת handlers
+  wsClient.onConnect(function() {
+    console.log("WebSocket connected to system monitors");
+  });
+  
+  wsClient.onDisconnect(function() {
+    console.log("WebSocket disconnected from system monitors");
+  });
+  
+  wsClient.onMessage(function(message) {
+    console.log("Received message:", message);
+  });
+  
+  // חיבור ל-WebSocket
+  wsClient.connect();
+  
+  // שמירת instance גלובלי (למקרה של צורך בעדכון ידני)
+  window.dashboardWSClient = wsClient;
+});
+</script>
 {% endblock %}

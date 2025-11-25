@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (isMobile) {
         // במובייל - פתיחה/סגירה עם class "open"
         sidebar.classList.toggle("open");
-      } else {
+    } else {
         // בדסקטופ - כיווץ/הרחבה
         sidebar.classList.toggle("collapsed");
         document.body.classList.toggle("sidebar-collapsed");
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // שמירת מצב ב-localStorage
         const isCollapsed = sidebar.classList.contains("collapsed");
         localStorage.setItem("sidebarCollapsed", isCollapsed);
-      }
+    }
       
       console.log("Sidebar toggled, mobile:", isMobile);
     }

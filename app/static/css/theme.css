@@ -1,7 +1,7 @@
 /* Light Theme (Default) */
 .theme-light {
-    --header-bg: #ffffff;
-    --sidebar-bg: #f8f9fa;
+    --header-bg: #ebebeb7c;
+    --sidebar-bg: #ebebeb7c;
     --content-bg: #ffffff;
     --card-bg: #ffffff;
     --text-primary: #212529;
@@ -13,16 +13,18 @@
     --accent-color: #7c8ca3;
     --accent-bg: rgba(40, 73, 122, 0.815);
     --table-header-bg: #f8f9fa;
+    --icon-color: #000000;
+    /* שחור */
 }
 
 /* Medium Theme */
 .theme-medium {
-    --header-bg: #3a3a3a;
-    --sidebar-bg: #454545;
-    --content-bg: #3a3a3a;
-    --card-bg: #4a4a4a;
-    --text-primary: #e0e0e0;
-    --text-secondary: #b0b0b0;
+    --header-bg: #55606896;
+    --sidebar-bg: #55606896;
+    --content-bg: #a8a4a4;
+    --card-bg: #e2e1f0;
+    --text-primary: #000000;
+    --text-secondary: #3b3535;
     --border-color: #555555;
     --border-hover: #666666;
     --hover-bg: #505050;
@@ -30,14 +32,16 @@
     --accent-color: #5a9fd4;
     --accent-bg: rgba(90, 159, 212, 0.15);
     --table-header-bg: #454545;
+    --icon-color: #6c757d;
+    /* אפור */
 }
 
 /* Dark Theme */
 .theme-dark {
-    --header-bg: #1a1a1a;
-    --sidebar-bg: #242424;
-    --content-bg: #1a1a1a;
-    --card-bg: #2d2d2d;
+    --header-bg: #201c1c;
+    --sidebar-bg: #201c1c;
+    --content-bg: #0e0b0b;
+    --card-bg: #141111;
     --text-primary: #e9ecef;
     --text-secondary: #adb5bd;
     --border-color: #404040;
@@ -47,6 +51,8 @@
     --accent-color: #212427;
     --accent-bg: rgba(56, 63, 68, 0.568);
     --table-header-bg: #2d2d2d;
+    --icon-color: #ffffff;
+    /* לבן */
 }
 
 .theme-medium .badge-success,

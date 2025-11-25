@@ -10,22 +10,22 @@
         <h2 class="card-title">מצלמה</h2>
     </div>
     <div class="card-body">
-        <div style="width: 100%; height: 500px; background: #000; border: 2px solid var(--border-color); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666; margin-bottom: 16px;">
-            <div style="text-align: center;">
-                <p style="font-size: 48px; margin-bottom: 10px;">📷</p>
-                <p style="font-size: 18px; color: #fff;"><strong>כאן יוצג הווידאו מהמצלמה בעתיד</strong></p>
-                <p style="font-size: 12px; color: #888; margin-top: 10px;">{{ resolution }} @ {{ fps }} FPS</p>
+        <div class="placeholder-container dark">
+            <div class="placeholder-content">
+                <p class="placeholder-icon">📷</p>
+                <p class="placeholder-title"><strong>כאן יוצג הווידאו מהמצלמה בעתיד</strong></p>
+                <p class="placeholder-subtitle">{{ resolution }} @ {{ fps }} FPS</p>
             </div>
         </div>
 
         <div class="grid grid-3">
-            <div style="padding: 12px; background: var(--hover-bg); border-radius: 4px; text-align: center;">
+            <div class="status-box">
                 <strong>סטטוס:</strong> <span class="badge badge-success">{{ status }}</span>
             </div>
-            <div style="padding: 12px; background: var(--hover-bg); border-radius: 4px; text-align: center;">
+            <div class="status-box">
                 <strong>רזולוציה:</strong> {{ resolution }}
             </div>
-            <div style="padding: 12px; background: var(--hover-bg); border-radius: 4px; text-align: center;">
+            <div class="status-box">
                 <strong>FPS:</strong> {{ fps }}
             </div>
         </div>
@@ -38,13 +38,13 @@
             <h3 class="card-title">הקלטה</h3>
         </div>
         <div class="card-body">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div class="setting-row">
                 <span>מצב הקלטה:</span>
                 <span class="badge {% if recording %}badge-danger{% else %}badge-info{% endif %}">
                     {% if recording %}מקליט{% else %}לא מקליט{% endif %}
                 </span>
             </div>
-            <button style="width: 100%; margin-top: 16px; padding: 10px; background: var(--accent-color); color: white; border: none; border-radius: 4px; cursor: pointer;">
+            <button class="btn btn-primary btn-full-width">
                 {% if recording %}עצור הקלטה{% else %}התחל הקלטה{% endif %}
             </button>
         </div>
@@ -56,8 +56,8 @@
         </div>
         <div class="card-body">
             <p><strong>שימוש באחסון:</strong> {{ storage_used }}</p>
-            <div style="width: 100%; height: 20px; background: #e9ecef; border-radius: 10px; margin-top: 8px;">
-                <div style="width: {{ storage_used }}; height: 100%; background: #ffc107; border-radius: 10px;"></div>
+            <div class="progress-bar progress-bar-warning">
+                <div class="progress-bar-fill" style="width: {{ storage_used }};"></div>
             </div>
         </div>
     </div>

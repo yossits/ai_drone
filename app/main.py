@@ -23,6 +23,12 @@ from app.modules.networks import router as networks_router
 from app.modules.users import router as users_router
 from app.modules.application import router as application_router
 
+# ייבוא WebSocket router
+from app.core import websocket_router
+
+# ייבוא system monitor
+from app.core.system_monitor import start_monitoring, stop_monitoring
+
 # יצירת FastAPI app
 app = FastAPI(
     title=settings.APP_NAME, version=settings.APP_VERSION, debug=settings.DEBUG
@@ -44,8 +50,27 @@ app.include_router(networks_router)
 app.include_router(users_router)
 app.include_router(application_router)
 
+# חיבור WebSocket router
+app.include_router(websocket_router.router)
+
 
 # Root redirect ל-dashboard
 @app.get("/")
 async def root():
     return RedirectResponse(url="/dashboard")
+
+
+# Startup event - הפעלת system monitor
+@app.on_event("startup")
+async def startup_event():
+    """הפעלת system monitor בעת הפעלת האפליקציה"""
+    start_monitoring(interval=5)
+    print("System monitor started")
+
+
+# Shutdown event - עצירת system monitor
+@app.on_event("shutdown")
+async def shutdown_event():
+    """עצירת system monitor בעת סגירת האפליקציה"""
+    await stop_monitoring()
+    print("System monitor stopped")

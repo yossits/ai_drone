@@ -9,42 +9,40 @@
         <h2 class="card-title">הגדרות VPN</h2>
     </div>
     <div class="card-body">
-        <div style="display: flex; flex-direction: column; gap: 16px;">
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--hover-bg); border-radius: 4px;">
-                <label style="font-weight: 500;">הפעל VPN</label>
-                <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
-                    <input type="checkbox" {% if enabled %}checked{% endif %} style="opacity: 0; width: 0; height: 0;">
-                    <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: {% if enabled %}#28a745{% else %}#ccc{% endif %}; border-radius: 24px; transition: 0.3s;">
-                        <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: 0.3s; transform: {% if enabled %}translateX(26px){% else %}translateX(0){% endif %}"></span>
-                    </span>
+        <div class="form-container">
+            <div class="setting-row">
+                <label class="form-label no-margin">הפעל VPN</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" class="toggle-switch-input" {% if enabled %}checked{% endif %}>
+                    <span class="toggle-switch-slider"></span>
                 </label>
             </div>
 
-            <div>
-                <label style="display: block; margin-bottom: 8px; font-weight: 500;">שרת VPN</label>
-                <input type="text" value="{{ server }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);" readonly>
+            <div class="form-group">
+                <label class="form-label">שרת VPN</label>
+                <input type="text" class="form-input" value="{{ server }}" readonly>
             </div>
 
-            <div>
-                <label style="display: block; margin-bottom: 8px; font-weight: 500;">פרוטוקול</label>
-                <input type="text" value="{{ protocol }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);" readonly>
+            <div class="form-group">
+                <label class="form-label">פרוטוקול</label>
+                <input type="text" class="form-input" value="{{ protocol }}" readonly>
             </div>
 
-            <div>
-                <label style="display: block; margin-bottom: 8px; font-weight: 500;">סטטוס</label>
-                <div style="padding: 12px; background: var(--hover-bg); border-radius: 4px;">
+            <div class="form-group">
+                <label class="form-label">סטטוס</label>
+                <div class="info-box">
                     <span class="badge {% if status == 'Connected' %}badge-success{% else %}badge-danger{% endif %}">{{ status }}</span>
                 </div>
             </div>
 
-            <div>
-                <label style="display: block; margin-bottom: 8px; font-weight: 500;">כתובת IP</label>
-                <input type="text" value="{{ ip_address }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary);" readonly>
+            <div class="form-group">
+                <label class="form-label">כתובת IP</label>
+                <input type="text" class="form-input" value="{{ ip_address }}" readonly>
             </div>
 
-            <div>
-                <label style="display: block; margin-bottom: 8px; font-weight: 500;">זמן פעילות</label>
-                <div style="padding: 12px; background: var(--hover-bg); border-radius: 4px;">
+            <div class="form-group">
+                <label class="form-label">זמן פעילות</label>
+                <div class="info-box">
                     {{ uptime }}
                 </div>
             </div>
