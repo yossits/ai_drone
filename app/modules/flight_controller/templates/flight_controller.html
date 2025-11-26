@@ -1,77 +1,76 @@
 {% extends "base.html" %} {% block title %}YT-Drone{% endblock %} {% block content %}
 
-<div class="card">
-  <div class="card-header">
-    <h2 class="card-title">פרמטרי טיסה</h2>
-  </div>
-  <div class="card-body">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>פרמטר</th>
-          <th>ערך</th>
-          <th>סטטוס</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>מצב טיסה</td>
-          <td>{{ flight_mode }}</td>
-          <td><span class="badge badge-info">Active</span></td>
-        </tr>
-        <tr>
-          <td>סטטוס נשק</td>
-          <td>{{ arm_status }}</td>
-          <td><span class="badge badge-success">Ready</span></td>
-        </tr>
-        <tr>
-          <td>Failsafe</td>
-          <td>{{ failsafe }}</td>
-          <td><span class="badge badge-success">OK</span></td>
-        </tr>
-        <tr>
-          <td>Throttle</td>
-          <td>{{ throttle }}%</td>
-          <td><span class="badge badge-info">Normal</span></td>
-        </tr>
-        <tr>
-          <td>Roll</td>
-          <td>{{ roll }}°</td>
-          <td><span class="badge badge-info">Normal</span></td>
-        </tr>
-        <tr>
-          <td>Pitch</td>
-          <td>{{ pitch }}°</td>
-          <td><span class="badge badge-info">Normal</span></td>
-        </tr>
-        <tr>
-          <td>Yaw</td>
-          <td>{{ yaw }}°</td>
-          <td><span class="badge badge-info">Normal</span></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
 <div class="grid grid-2">
   <div class="card">
     <div class="card-header">
-      <h3 class="card-title">מצב סוללה</h3>
+      <h3 class="card-title">Flight Controller</h3>
     </div>
     <div class="card-body">
-      <p><strong>מתח:</strong> {{ battery_voltage }}V</p>
-      <p><strong>זרם:</strong> {{ battery_current }}A</p>
+      <div class="form-container">
+        <!-- Enable Flight Controller -->
+        <div class="form-group">
+          <label class="form-label">Enable Flight Controller</label>
+          <select class="form-select">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+
+        <!-- Controller Type -->
+        <div class="form-group">
+          <label class="form-label">Controller Type</label>
+          <select class="form-select">
+            <option value="ardupilot">ArduPilot - Mavlink</option>
+          </select>
+        </div>
+
+        <!-- Connection Type -->
+        <div class="form-group">
+          <label class="form-label">Connection Type</label>
+          <select class="form-select">
+            <option value="serial">Serial connection</option>
+            <option value="usb">USB connection</option>
+          </select>
+        </div>
+
+        <!-- Baud Rate -->
+        <div class="form-group">
+          <label class="form-label">Baud Rate</label>
+          <select class="form-select">
+            <option value="9600">9600</option>
+            <option value="57600" selected>57600</option>
+            <option value="115200">115200</option>
+          </select>
+          <p style="font-size: 0.85em; color: var(--text-secondary); margin-top: 4px;">Default baudrate is 57600</p>
+        </div>
+
+        <!-- FC Internal Address -->
+        <div class="form-group">
+          <label class="form-label">FC Internal Address</label>
+          <p style="font-size: 0.75em; color: var(--text-secondary); margin-bottom: 4px;">Internal address for Flight Controller communication</p>
+          <input type="text" class="form-input" value="/dev/ttyAMA0">
+          <p style="font-size: 0.85em; color: var(--text-secondary); margin-top: 8px;">This is the internal address Raspberry Pi uses for communication with the Flight Controller. Only change if you know what you are doing!</p>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
+        <button class="btn" style="background: #ff9800; color: white; flex: 1;">
+          Restart
+        </button>
+        <button class="btn" style="background: #8b0000; color: white; flex: 1;">
+          Disconnect
+        </button>
+      </div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-header">
-      <h3 class="card-title">מצב מערכת</h3>
+      <h3 class="card-title">Mavlink Inspector</h3>
     </div>
     <div class="card-body">
-      <p><strong>עומס CPU:</strong> {{ cpu_load }}%</p>
-      <p><strong>שימוש בזיכרון:</strong> {{ memory_usage }}%</p>
+
     </div>
   </div>
 </div>
@@ -80,8 +79,7 @@
   <div class="card-body">
     <p>
       <em
-        >כאן יוצגו פרמטרים נוספים של Flight Controller בעתיד, כולל חיבור אמיתי
-        ל-MAVLink.</em
+        >כאן יוצגו נתונים של יומן פעולות</em
       >
     </p>
   </div>

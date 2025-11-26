@@ -2,7 +2,20 @@
 endblock %} {% block content %}
 
 <div class="grid grid-2">
-  <div class="card card-compact grid-span-2" data-ws-topic="system_info">
+  <div class="card card-compact">
+    <div class="card-header">
+      <h3 class="card-title">YT-Drone</h3>
+    </div>
+    <div class="card-body">
+      <p>
+        <strong>חיבור:</strong>
+        <span class="badge badge-success">{{ connection_status }}</span>
+      </p>
+      <p><strong>עוצמת אות:</strong> {{ signal_strength }}%</p>
+    </div>
+  </div>
+
+  <div class="card card-compact" data-ws-topic="system_info">
     <div class="card-header">
       <h3 class="card-title">System Information</h3>
     </div>
@@ -136,19 +149,6 @@ endblock %} {% block content %}
         </div>
       </div>
       </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header">
-      <h3 class="card-title">סטטוס חיבור</h3>
-    </div>
-    <div class="card-body">
-      <p>
-        <strong>חיבור:</strong>
-        <span class="badge badge-success">{{ connection_status }}</span>
-      </p>
-      <p><strong>עוצמת אות:</strong> {{ signal_strength }}%</p>
     </div>
   </div>
 
