@@ -66,13 +66,19 @@ endblock %} {% block content %}
 
   <div class="card">
     <div class="card-header">
-      <h3 class="card-title">Battery</h3>
+      <h3 class="card-title">Storage</h3>
     </div>
-    <div class="card-body">
-      <p><strong>Battery Level:</strong> {{ battery_level }}%</p>
-      <div class="progress-bar progress-bar-success">
-        <div class="progress-bar-fill" style="width: {{ battery_level }}%;"></div>
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Boot</h3>
       </div>
+      <div class="card-body"></div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">SD Card</h3>
+      </div>
+      <div class="card-body"></div>
     </div>
   </div>
 
@@ -124,8 +130,67 @@ endblock %} {% block content %}
 {% block scripts %}
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  // יצירת WebSocketClient instance
-  const wsClient = new WebSocketClient("/ws/system_info", ["system_info"]);
+  // יצירת WebSocketClient instance עם 3 topics
+  const wsClient = new WebSocketClient("/ws/", [
+    "static_info",
+    "slow_info", 
+    "fast_info"
+  ]);
+  
+  // פונקציה לעדכון שדות
+  function updateFields(fieldNames, data) {
+    fieldNames.forEach(fieldName => {
+      if (!data.hasOwnProperty(fieldName)) return;
+      
+      const value = data[fieldName];
+      const elements = document.querySelectorAll(`[data-ws-field="${fieldName}"]`);
+      
+      elements.forEach(element => {
+        // עדכון טקסט
+        if (element.classList.contains('info-box') || 
+            element.classList.contains('progress-bar-value')) {
+          if (fieldName === 'cpu_temp') {
+            element.textContent = `${value}°C`;
+          } else if (fieldName === 'cpu_usage') {
+            element.textContent = `${value}%`;
+          } else {
+            element.textContent = value;
+          }
+        }
+        
+        // עדכון CSS variables עבור progress bars
+        if (fieldName === 'cpu_temp_percent') {
+          const progressBar = element.closest('.progress-bar-temp') || 
+                             (element.classList.contains('progress-bar-temp') ? element : null);
+          if (progressBar) {
+            progressBar.style.setProperty('--temp-fill', `${value}%`);
+          }
+        }
+        
+        if (fieldName === 'cpu_usage' || fieldName === 'ram_percent') {
+          const progressBar = element.closest('.progress-bar') || 
+                             (element.classList.contains('progress-bar') ? element : null);
+          if (progressBar) {
+            progressBar.style.setProperty('--fill-percent', `${value}%`);
+          }
+        }
+        
+        // עדכון classes עבור temp_class
+        if (fieldName === 'temp_class') {
+          const classElement = element.closest('[data-ws-field-class="temp_class"]') || 
+                              (element.hasAttribute('data-ws-field-class') && 
+                               element.getAttribute('data-ws-field-class') === 'temp_class' ? element : null);
+          if (classElement) {
+            // הסרת כל ה-classes הישנים
+            classElement.classList.remove('progress-bar-temp-cold', 'progress-bar-temp-normal',
+                                        'progress-bar-temp-warm', 'progress-bar-temp-hot');
+            // הוספת class חדש
+            classElement.classList.add(`progress-bar-temp-${value}`);
+          }
+        }
+      });
+    });
+  }
   
   // הגדרת handlers
   wsClient.onConnect(function() {
@@ -136,8 +201,54 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("WebSocket disconnected from system monitors");
   });
   
+  // Custom message handler עם switch לפי topic
   wsClient.onMessage(function(message) {
-    console.log("Received message:", message);
+    if (!message.topic || !message.data) {
+      console.log("Received message:", message);
+      return;
+    }
+    
+    const topic = message.topic;
+    const data = message.data;
+    const timestamp = new Date().toLocaleTimeString();
+    
+    // Switch לפי topic - מעדכן רק את הברים הרלוונטיים
+    switch(topic) {
+      case 'static_info':
+        console.log(`[${timestamp}] 📌 STATIC_INFO - Updating static fields:`, {
+          os_name: data.os_name,
+          hardware: data.hardware,
+          ram_total: data.ram_total
+        });
+        // עדכון שדות סטטיים (רק פעם אחת)
+        updateFields(['os_name', 'hardware', 'ram_total'], data);
+        break;
+        
+      case 'slow_info':
+        console.log(`[${timestamp}] 🐌 SLOW_INFO - Updating slow fields:`, {
+          uptime: data.uptime
+        });
+        // עדכון שדות איטיים (כל 60 שניות)
+        updateFields(['uptime'], data);
+        break;
+        
+      case 'fast_info':
+        console.log(`[${timestamp}] ⚡ FAST_INFO - Updating fast fields:`, {
+          cpu_temp: data.cpu_temp,
+          cpu_temp_percent: data.cpu_temp_percent,
+          temp_class: data.temp_class,
+          cpu_usage: data.cpu_usage,
+          ram_used: data.ram_used,
+          ram_percent: data.ram_percent
+        });
+        // עדכון שדות מהירים (כל 5 שניות)
+        updateFields(['cpu_temp', 'cpu_temp_percent', 'temp_class', 
+                     'cpu_usage', 'ram_used', 'ram_percent'], data);
+        break;
+        
+      default:
+        console.log(`[${timestamp}] ❓ Unknown topic:`, topic, message);
+    }
   });
   
   // חיבור ל-WebSocket
