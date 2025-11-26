@@ -145,13 +145,99 @@ def get_static_info() -> Dict:
     }
 
 
+def get_storage_info() -> Dict:
+    """
+    מחזיר נתוני Storage עבור Boot ו-Root partitions
+    Returns:
+        dict עם boot ו-root storage info
+    """
+    try:
+        boot_info = None
+        root_info = None
+        
+        # איסוף נתונים על כל ה-partitions
+        partitions = psutil.disk_partitions()
+        
+        for partition in partitions:
+            try:
+                usage = psutil.disk_usage(partition.mountpoint)
+                
+                total_gb = round(usage.total / (1024**3), 2)
+                used_gb = round(usage.used / (1024**3), 2)
+                free_gb = round(usage.free / (1024**3), 2)
+                percent = round(usage.percent, 2)
+                
+                partition_info = {
+                    "device": partition.device,
+                    "mountpoint": partition.mountpoint,
+                    "total": f"{total_gb} GB",
+                    "used": f"{used_gb} GB",
+                    "free": f"{free_gb} GB",
+                    "percent": percent
+                }
+                
+                # Boot partition
+                if partition.mountpoint == '/boot/firmware' or 'boot' in partition.mountpoint.lower():
+                    boot_info = partition_info
+                
+                # Root partition
+                if partition.mountpoint == '/':
+                    root_info = partition_info
+                    
+            except PermissionError:
+                # חלק מה-partitions לא נגישים
+                continue
+        
+        return {
+            "boot": boot_info or {
+                "device": "N/A",
+                "mountpoint": "/boot/firmware",
+                "total": "0 GB",
+                "used": "0 GB",
+                "free": "0 GB",
+                "percent": 0.0
+            },
+            "root": root_info or {
+                "device": "N/A",
+                "mountpoint": "/",
+                "total": "0 GB",
+                "used": "0 GB",
+                "free": "0 GB",
+                "percent": 0.0
+            }
+        }
+    except Exception as e:
+        return {
+            "boot": {
+                "device": "N/A",
+                "mountpoint": "/boot/firmware",
+                "total": "0 GB",
+                "used": "0 GB",
+                "free": "0 GB",
+                "percent": 0.0
+            },
+            "root": {
+                "device": "N/A",
+                "mountpoint": "/",
+                "total": "0 GB",
+                "used": "0 GB",
+                "free": "0 GB",
+                "percent": 0.0
+            }
+        }
+
+
 def get_slow_dynamic_info() -> Dict:
     """
     נתונים דינמיים שמשתנים לאט
     לשימוש בעדכון כל 60 שניות
     """
+    storage_data = get_storage_info()
+    
     return {
         "uptime": get_uptime(),
+        "storage_boot": storage_data["boot"],
+        "storage_root": storage_data["root"],
     }
 
 

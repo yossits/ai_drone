@@ -329,11 +329,10 @@ body.sidebar-collapsed .main-content {
     justify-content: space-between;
     margin-bottom: var(--spacing-md);
     padding-bottom: var(--spacing-md);
-    border-bottom: 1px solid var(--border-color);
 }
 
 .card-title {
-    font-size: 18px;
+    font-size: 1.5rem;
     font-weight: 600;
     color: var(--text-primary);
     margin: 0;
@@ -341,6 +340,75 @@ body.sidebar-collapsed .main-content {
 
 .card-body {
     color: var(--text-secondary);
+}
+
+/* Compact Card - 50% smaller height */
+.card-compact {
+    padding: calc(var(--spacing-lg) * 0.5);
+    margin-bottom: calc(var(--spacing-lg) * 0.5);
+}
+
+.card-compact .card-header {
+    margin-bottom: calc(var(--spacing-md) * 0.5);
+    padding-bottom: calc(var(--spacing-md) * 0.5);
+}
+
+.card-compact .card-body .form-group {
+    margin-bottom: calc(var(--spacing-md) * 0.5);
+}
+
+.card-compact .card-body .form-label {
+    margin-bottom: calc(var(--spacing-sm) * 0.5);
+    font-size: 13px;
+}
+
+.card-compact .info-box {
+    padding: calc(12px * 0.5);
+    font-size: 13px;
+}
+
+.card-compact .storage-grid-wrapper {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+}
+
+.card-compact .storage-partition {
+    padding: var(--spacing-md);
+    flex: 0 0 auto;
+    width: 300px;
+    margin: 0;
+}
+
+.card-compact .storage-header {
+    margin-bottom: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+}
+
+.card-compact .storage-header .storage-title {
+    font-size: 1.5rem;
+}
+
+.card-compact .storage-info {
+    gap: var(--spacing-sm);
+}
+
+.card-compact .storage-info .form-group {
+    margin-bottom: var(--spacing-sm);
+}
+
+.card-compact .storage-info .form-label {
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.card-compact .storage-info .info-box {
+    padding: 2px;
+    font-size: 15px;
+}
+
+.card-compact .storage-info .progress-bar {
+    height: 10px;
 }
 
 /* Form Elements */
@@ -390,7 +458,7 @@ body.sidebar-collapsed .main-content {
 /* Progress Bars */
 .progress-bar {
     width: 100%;
-    height: 20px;
+    height: 10px;
     background: #e9ecef;
     border-radius: 10px;
     margin-top: var(--spacing-sm);
@@ -540,6 +608,63 @@ body.sidebar-collapsed .main-content {
 
 .progress-bar-ram .progress-bar-fill {
     display: none;
+}
+
+/* Storage Grid Wrapper */
+.storage-grid-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+    justify-items: start;
+}
+
+/* Storage Partitions Styling */
+.storage-partition {
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+}
+
+.storage-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+}
+
+.storage-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.storage-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Storage Progress Bar */
+.progress-bar-storage {
+    height: 18px;
+    background: var(--bg-secondary);
+    border-radius: 9999px;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(to right,
+            #ff9800 0%,
+            #f44336 100%) !important;
+}
+
+.progress-bar-storage .progress-bar-mask {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: calc(100% - var(--fill-percent, 0%));
+    background: rgba(0, 0, 0, 0.8) !important;
+    transition: width 0.3s ease;
+    z-index: 1;
 }
 
 /* Progress Bar Row Layout */
@@ -811,7 +936,7 @@ body.sidebar-collapsed .main-content {
 }
 
 .grid-2 {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
 }
 
 .grid-3 {
@@ -820,6 +945,11 @@ body.sidebar-collapsed .main-content {
 
 .grid-4 {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* Grid Span Classes */
+.grid-span-2 {
+    grid-column: span 2;
 }
 
 /* Typography */
@@ -939,6 +1069,11 @@ h3 {
     .header.collapsed {
         left: 70px;
     }
+
+    .card-compact .storage-partition {
+        width: 50%;
+        max-width: 50%;
+    }
 }
 
 /* Responsive - Mobile */
@@ -995,6 +1130,24 @@ h3 {
     .grid-3,
     .grid-4 {
         grid-template-columns: 1fr;
+    }
+
+    .grid-span-2 {
+        grid-column: span 1;
+    }
+
+    .storage-grid-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .card-compact .storage-grid-wrapper {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    .card-compact .storage-partition {
+        width: 100%;
+        max-width: 100%;
     }
 
     .header-content {

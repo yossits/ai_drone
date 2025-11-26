@@ -3,13 +3,14 @@
 """
 
 from datetime import datetime
-from app.core.system import get_system_info
+from app.core.system import get_system_info, get_storage_info
 
 
 def get_dashboard_data():
     """מחזיר נתוני דמו ל-Dashboard"""
     # איסוף נתוני מערכת אמיתיים
     system_data = get_system_info()
+    storage_data = get_storage_info()
     
     return {
         # נתוני מערכת אמיתיים
@@ -23,6 +24,9 @@ def get_dashboard_data():
         "ram_used": system_data["ram_used"],
         "ram_total": system_data["ram_total"],
         "ram_percent": system_data["ram_percent"],
+        # נתוני Storage
+        "storage_boot": storage_data["boot"],
+        "storage_root": storage_data["root"],
         # נתוני דמו (לעתיד)
         "system_status": "Online",
         "battery_level": 85,

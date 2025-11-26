@@ -1,8 +1,8 @@
 {% extends "base.html" %} {% block title %}Dashboard - Drone Control Center{%
 endblock %} {% block content %}
 
-<div class="grid grid-3">
-  <div class="card" data-ws-topic="system_info">
+<div class="grid grid-2">
+  <div class="card card-compact grid-span-2" data-ws-topic="system_info">
     <div class="card-header">
       <h3 class="card-title">System Information</h3>
     </div>
@@ -64,21 +64,78 @@ endblock %} {% block content %}
     </div>
   </div>
 
-  <div class="card">
+  <div class="card card-compact grid-span-2">
     <div class="card-header">
       <h3 class="card-title">Storage</h3>
     </div>
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title">Boot</h3>
+    <div class="card-body">
+      <div class="storage-grid-wrapper">
+        <!-- Boot Partition -->
+        <div class="storage-partition">
+        <div class="storage-header">
+          <h4 class="storage-title">Boot</h4>
+        </div>
+        <div class="storage-info">
+          <div class="form-group">
+            <label class="form-label">Mount Point:</label>
+            <div class="info-box" data-ws-field="storage_boot.mountpoint">{{ storage_boot.mountpoint }}</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total:</label>
+            <div class="info-box" data-ws-field="storage_boot.total">{{ storage_boot.total }}</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Used:</label>
+            <div class="info-box" data-ws-field="storage_boot.used">{{ storage_boot.used }} (<span data-ws-field="storage_boot.percent">{{ storage_boot.percent }}</span>%)</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Free:</label>
+            <div class="info-box" data-ws-field="storage_boot.free">{{ storage_boot.free }}</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Usage:</label>
+            <div class="progress-bar progress-bar-storage" 
+                 style="--fill-percent: {{ storage_boot.percent }}%;"
+                 data-ws-field="storage_boot.percent">
+              <div class="progress-bar-mask"></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card-body"></div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title">SD Card</h3>
+      
+      <!-- SD Card (Root) Partition -->
+      <div class="storage-partition">
+        <div class="storage-header">
+          <h4 class="storage-title">SD Card</h4>
+        </div>
+        <div class="storage-info">
+          <div class="form-group">
+            <label class="form-label">Mount Point:</label>
+            <div class="info-box" data-ws-field="storage_root.mountpoint">{{ storage_root.mountpoint }}</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total:</label>
+            <div class="info-box" data-ws-field="storage_root.total">{{ storage_root.total }}</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Used:</label>
+            <div class="info-box" data-ws-field="storage_root.used">{{ storage_root.used }} (<span data-ws-field="storage_root.percent">{{ storage_root.percent }}</span>%)</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Free:</label>
+            <div class="info-box" data-ws-field="storage_root.free">{{ storage_root.free }}</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Usage:</label>
+            <div class="progress-bar progress-bar-storage" 
+                 style="--fill-percent: {{ storage_root.percent }}%;"
+                 data-ws-field="storage_root.percent">
+              <div class="progress-bar-mask"></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card-body"></div>
+      </div>
     </div>
   </div>
 
@@ -175,6 +232,15 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         }
         
+        // עדכון CSS variable עבור storage percent
+        if (fieldName.includes('storage_') && fieldName.includes('.percent')) {
+          const progressBar = element.closest('.progress-bar-storage') || 
+                             (element.classList.contains('progress-bar-storage') ? element : null);
+          if (progressBar) {
+            progressBar.style.setProperty('--fill-percent', `${value}%`);
+          }
+        }
+        
         // עדכון classes עבור temp_class
         if (fieldName === 'temp_class') {
           const classElement = element.closest('[data-ws-field-class="temp_class"]') || 
@@ -187,6 +253,36 @@ document.addEventListener("DOMContentLoaded", function () {
             // הוספת class חדש
             classElement.classList.add(`progress-bar-temp-${value}`);
           }
+        }
+      });
+    });
+  }
+  
+  // פונקציה לעדכון שדות Storage
+  function updateStorageFields(prefix, storageData) {
+    if (!storageData) return;
+    
+    // עדכון כל השדות של storage
+    Object.keys(storageData).forEach(key => {
+      const fieldName = `storage_${prefix}.${key}`;
+      const value = storageData[key];
+      
+      const elements = document.querySelectorAll(`[data-ws-field="${fieldName}"]`);
+      elements.forEach(element => {
+        if (key === 'percent') {
+          // עדכון progress bar
+          const progressBar = element.closest('.progress-bar-storage') || 
+                             (element.classList.contains('progress-bar-storage') ? element : null);
+          if (progressBar) {
+            progressBar.style.setProperty('--fill-percent', `${value}%`);
+          }
+          // עדכון טקסט של האחוז
+          if (element.tagName === 'SPAN') {
+            element.textContent = value;
+          }
+        } else {
+          // עדכון טקסט רגיל
+          element.textContent = value;
         }
       });
     });
@@ -226,10 +322,20 @@ document.addEventListener("DOMContentLoaded", function () {
         
       case 'slow_info':
         console.log(`[${timestamp}] 🐌 SLOW_INFO - Updating slow fields:`, {
-          uptime: data.uptime
+          uptime: data.uptime,
+          storage_boot: data.storage_boot,
+          storage_root: data.storage_root
         });
         // עדכון שדות איטיים (כל 60 שניות)
         updateFields(['uptime'], data);
+        
+        // עדכון Storage (אם קיים)
+        if (data.storage_boot) {
+          updateStorageFields('boot', data.storage_boot);
+        }
+        if (data.storage_root) {
+          updateStorageFields('root', data.storage_root);
+        }
         break;
         
       case 'fast_info':
