@@ -352,11 +352,24 @@ body.sidebar-collapsed .main-content {
     padding-bottom: var(--spacing-md);
 }
 
+.card-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
 .card-title {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 600;
     color: var(--text-primary);
     margin: 0;
+}
+
+.card-title-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: var(--icon-color);
 }
 
 .card-body {
@@ -386,6 +399,29 @@ body.sidebar-collapsed .main-content {
 .card-compact .info-box {
     padding: calc(12px * 0.5);
     font-size: 13px;
+}
+
+/* System Information Card - סגנונות מותאמים */
+.card-compact[data-ws-topic="system_info"] .form-label {
+    color: var(--text-secondary);
+    /* צבע פחות בהיר */
+}
+
+.card-compact[data-ws-topic="system_info"] .info-box {
+    background: transparent;
+    /* הסרת המעטפת האפורה */
+    padding: 0;
+    /* הסרת padding */
+    border: none;
+    /* הסרת border */
+    border-radius: 0;
+    /* הסרת border-radius */
+    color: var(--text-primary);
+    /* צבע בהיר (מותאם לערכות נושא) */
+    font-size: 17px;
+    /* הגדלת גודל הפונט מ-13px */
+    font-weight: 600;
+    /* הדגשה - משקל פונט כבד יותר */
 }
 
 .card-compact .storage-grid-wrapper {

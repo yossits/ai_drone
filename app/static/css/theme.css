@@ -5,7 +5,7 @@
     --content-bg: #ffffff;
     --card-bg: #ffffff;
     --input-bg: #ffffff;
-    --text-primary: #212529;
+    --text-primary: #000000;
     --text-secondary: #6c757d;
     --border-color: #dee2e6;
     --border-hover: #adb5bd;
@@ -162,7 +162,7 @@
     --card-bg: #141111;
     --input-bg: #1a1818;
     --text-primary: #e9ecef;
-    --text-secondary: #adb5bd;
+    --text-secondary: #838383;
     --border-color: #404040;
     --border-hover: #555555;
     --hover-bg: #333333;
