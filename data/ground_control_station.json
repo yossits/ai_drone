@@ -1,0 +1,11 @@
+{
+  "destinations": [
+    {
+      "name": "",
+      "ip": "",
+      "port": "",
+      "destinationEnabled": false,
+      "telemetryEnabled": false
+    }
+  ]
+}

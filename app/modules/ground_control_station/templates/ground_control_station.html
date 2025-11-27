@@ -5,62 +5,21 @@
 {% block content %}
 <h1>Ground Control Station</h1>
 
-<p style="margin-bottom: var(--spacing-lg); color: var(--text-secondary);">
+<p class="paragraph-secondary">
   Add destinations to receive live video and flight data from your drone. Each destination is a combination of an IP address and a port number.
+</p>
+
+<p class="paragraph-secondary-with-margin">
   These destinations will receive data using the UDP protocol, which allows for fast, real-time transmission of video and telemetry information.
 </p>
 
-<style>
-.destination-card {
-  max-width: 300px;
-  width: 100%;
-}
-</style>
-
 <!-- Destinations Grid -->
-<div class="grid grid-3" id="destinations-grid">
-  <!-- Default empty destination card -->
-  <div class="card destination-card">
-    <div class="card-header" style="display: flex; align-items: center; justify-content: space-between;">
-      <h3 class="card-title" style="margin: 0;">New Destination</h3>
-      <label class="toggle-switch">
-        <input type="checkbox" class="toggle-switch-input destination-enabled">
-        <span class="toggle-switch-slider"></span>
-      </label>
-    </div>
-    <div class="card-body">
-      <div class="form-group">
-        <label class="form-label">Name:</label>
-        <input type="text" class="form-input" placeholder="Enter destination name">
-      </div>
-      
-      <div class="form-group">
-        <label class="form-label">Destination IP or Host:</label>
-        <input type="text" class="form-input" placeholder="Enter IP address">
-      </div>
-      
-      <div class="form-group">
-        <label class="form-label">Telemetry Port:</label>
-        <input type="text" class="form-input" placeholder="14550">
-      </div>
-      
-      <div class="setting-row">
-        <label class="form-label no-margin">Enable Telemetry</label>
-        <label class="toggle-switch">
-          <input type="checkbox" class="toggle-switch-input telemetry-enabled">
-          <span class="toggle-switch-slider"></span>
-        </label>
-      </div>
-      
-      <button class="btn btn-danger remove-destination-btn" style="margin-top: var(--spacing-md); border: 1px solid #dc3545;">
-        Remove
-      </button>
-    </div>
-  </div>
+<div class="grid grid-3 destinations-grid-no-gap" id="destinations-grid">
+  <!-- Cards will be loaded dynamically -->
 </div>
 
 <!-- Add Destination Button -->
-<button class="btn btn-primary" id="add-destination-btn" style="margin-top: var(--spacing-lg);">
+<button class="btn btn-primary btn-add-destination" id="add-destination-btn">
   Add Destination
 </button>
 
@@ -72,54 +31,247 @@ document.addEventListener("DOMContentLoaded", function() {
   const grid = document.getElementById('destinations-grid');
   const addButton = document.getElementById('add-destination-btn');
   
+  // Helper function to escape HTML
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+  
+  // Function to update card title based on name input
+  function updateCardTitle(card, name) {
+    const titleElement = card.querySelector('.card-title');
+    if (titleElement) {
+      titleElement.textContent = name || 'New Destination';
+    }
+  }
+  
+  // Function to collect all destinations from the grid
+  function collectDestinations() {
+    const cards = grid.querySelectorAll('.destination-card');
+    const destinations = [];
+    
+    cards.forEach(card => {
+      const nameInput = card.querySelector('.form-group:nth-child(1) .form-input');
+      const ipInput = card.querySelector('.form-group:nth-child(2) .form-input');
+      const portInput = card.querySelector('.form-group:nth-child(3) .form-input');
+      const destEnabledCheckbox = card.querySelector('.destination-enabled');
+      const telemetryEnabledCheckbox = card.querySelector('.telemetry-enabled');
+      
+      destinations.push({
+        name: nameInput ? (nameInput.value || '') : '',
+        ip: ipInput ? (ipInput.value || '') : '',
+        port: portInput ? (portInput.value || '') : '',
+        destinationEnabled: destEnabledCheckbox ? destEnabledCheckbox.checked : false,
+        telemetryEnabled: telemetryEnabledCheckbox ? telemetryEnabledCheckbox.checked : false
+      });
+    });
+    
+    return destinations;
+  }
+  
+  // Function to save destinations to server
+  function saveDestinations() {
+    const destinations = collectDestinations();
+    
+    fetch('/ground-control-station/destinations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ destinations: destinations })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'error') {
+        console.error('Failed to save destinations:', data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error saving destinations:', error);
+    });
+  }
+  
+  // Function to set up event listeners for a card
+  function setupCardListeners(card) {
+    // Name input - update title and save
+    const nameInput = card.querySelector('.form-group:nth-child(1) .form-input');
+    if (nameInput) {
+      nameInput.addEventListener('input', function() {
+        updateCardTitle(card, this.value);
+        saveDestinations();
+      });
+    }
+    
+    // IP input - save on change
+    const ipInput = card.querySelector('.form-group:nth-child(2) .form-input');
+    if (ipInput) {
+      ipInput.addEventListener('input', saveDestinations);
+    }
+    
+    // Port input - save on change
+    const portInput = card.querySelector('.form-group:nth-child(3) .form-input');
+    if (portInput) {
+      portInput.addEventListener('input', saveDestinations);
+    }
+    
+    // Destination enabled checkbox - save on change
+    const destEnabledCheckbox = card.querySelector('.destination-enabled');
+    if (destEnabledCheckbox) {
+      destEnabledCheckbox.addEventListener('change', saveDestinations);
+    }
+    
+    // Telemetry enabled checkbox - save on change
+    const telemetryEnabledCheckbox = card.querySelector('.telemetry-enabled');
+    if (telemetryEnabledCheckbox) {
+      telemetryEnabledCheckbox.addEventListener('change', saveDestinations);
+    }
+  }
+  
   // Template function to create a new destination card
-  function createDestinationCard() {
+  function createDestinationCard(name = '', ip = '', port = '', destEnabled = false, telemetryEnabled = false) {
     const card = document.createElement('div');
     card.className = 'card destination-card';
+    const title = name || 'New Destination';
+    const nameValue = escapeHtml(name || '');
+    const ipValue = escapeHtml(ip || '');
+    const portValue = escapeHtml(port || '');
+    const titleEscaped = escapeHtml(title);
+    const destChecked = destEnabled ? 'checked' : '';
+    const telemetryChecked = telemetryEnabled ? 'checked' : '';
+    
     card.innerHTML = `
-      <div class="card-header" style="display: flex; align-items: center; justify-content: space-between;">
-        <h3 class="card-title" style="margin: 0;">New Destination</h3>
+        <div class="card-header">
+        <h3 class="card-title card-title-no-margin">${titleEscaped}</h3>
         <label class="toggle-switch">
-          <input type="checkbox" class="toggle-switch-input destination-enabled">
+          <input type="checkbox" class="toggle-switch-input destination-enabled" ${destChecked}>
           <span class="toggle-switch-slider"></span>
         </label>
-      </div>
-      <div class="card-body">
+        </div>
+        <div class="card-body">
         <div class="form-group">
           <label class="form-label">Name</label>
-          <input type="text" class="form-input" placeholder="Enter destination name">
+          <input type="text" class="form-input" placeholder="Enter destination name" value="${nameValue}">
         </div>
         
         <div class="form-group">
           <label class="form-label">Destination IP or Host</label>
-          <input type="text" class="form-input" placeholder="Enter IP address">
-        </div>
+          <input type="text" class="form-input" placeholder="Enter IP address" value="${ipValue}">
+    </div>
         
         <div class="form-group">
           <label class="form-label">Telemetry Port</label>
-          <input type="text" class="form-input" placeholder="14550">
-        </div>
-        
-        <div class="setting-row">
+          <input type="text" class="form-input" placeholder="14550" value="${portValue}">
+</div>
+
+        <div class="setting-row-no-bg">
           <label class="form-label no-margin">Enable Telemetry</label>
           <label class="toggle-switch">
-            <input type="checkbox" class="toggle-switch-input telemetry-enabled">
+            <input type="checkbox" class="toggle-switch-input telemetry-enabled" ${telemetryChecked}>
             <span class="toggle-switch-slider"></span>
           </label>
-        </div>
+    </div>
         
-        <button class="btn btn-danger remove-destination-btn" style="margin-top: var(--spacing-md); border: 1px solid #dc3545;">
+        <button class="btn btn-danger remove-destination-btn">
           Remove
         </button>
-      </div>
+</div>
     `;
+    
+    // Set up event listeners for the new card
+    setupCardListeners(card);
+    
     return card;
+  }
+  
+  // Function to load destinations from server
+  function loadDestinations() {
+    // Clear existing cards
+    const existingCards = grid.querySelectorAll('.destination-card');
+    existingCards.forEach(card => card.remove());
+    
+    // Get destinations from the template data
+    const destinations = {{ destinations|tojson|default('[]') }};
+    
+    if (destinations && Array.isArray(destinations) && destinations.length > 0) {
+      destinations.forEach(dest => {
+        const card = createDestinationCard(
+          dest.name || '',
+          dest.ip || '',
+          dest.port || '',
+          dest.destinationEnabled || false,
+          dest.telemetryEnabled || false
+        );
+        grid.appendChild(card);
+      });
+    } else {
+      // If no destinations, create one empty card
+      const card = createDestinationCard();
+      grid.appendChild(card);
+    }
   }
   
   // Function to add a new destination card
   function addDestination() {
-    const newCard = createDestinationCard();
+    // Get the first card (leftmost card)
+    const firstCard = grid.querySelector('.destination-card');
+    
+    let name = '';
+    let ip = '';
+    let port = '';
+    let destEnabled = false;
+    let telemetryEnabled = false;
+    
+    if (firstCard) {
+      // Get Name from first input
+      const nameInput = firstCard.querySelector('.form-group:nth-child(1) .form-input');
+      if (nameInput) {
+        name = nameInput.value || '';
+      }
+      
+      // Get Destination IP from second input
+      const ipInput = firstCard.querySelector('.form-group:nth-child(2) .form-input');
+      if (ipInput) {
+        ip = ipInput.value || '';
+      }
+      
+      // Get Telemetry Port from third input
+      const portInput = firstCard.querySelector('.form-group:nth-child(3) .form-input');
+      if (portInput) {
+        port = portInput.value || '';
+      }
+      
+      // Get destination enabled checkbox state
+      const destEnabledCheckbox = firstCard.querySelector('.destination-enabled');
+      if (destEnabledCheckbox) {
+        destEnabled = destEnabledCheckbox.checked;
+      }
+      
+      // Get telemetry enabled checkbox state
+      const telemetryEnabledCheckbox = firstCard.querySelector('.telemetry-enabled');
+      if (telemetryEnabledCheckbox) {
+        telemetryEnabled = telemetryEnabledCheckbox.checked;
+      }
+    }
+    
+    const newCard = createDestinationCard(name, ip, port, destEnabled, telemetryEnabled);
     grid.appendChild(newCard);
+    
+    // Clear the first card (leftmost card) after creating new card
+    if (firstCard) {
+      // Clear all input fields
+      const inputs = firstCard.querySelectorAll('.form-input');
+      inputs.forEach(input => input.value = '');
+      
+      // Uncheck all checkboxes
+      const checkboxes = firstCard.querySelectorAll('.toggle-switch-input');
+      checkboxes.forEach(checkbox => checkbox.checked = false);
+      
+      // Update card title to "New Destination"
+      updateCardTitle(firstCard, '');
+    }
+    
+    saveDestinations();
   }
   
   // Function to remove a destination card
@@ -127,12 +279,15 @@ document.addEventListener("DOMContentLoaded", function() {
     const card = button.closest('.destination-card');
     if (card && grid.children.length > 1) {
       card.remove();
+      saveDestinations();
     } else if (card && grid.children.length === 1) {
       // If this is the last card, reset it instead of removing
       const inputs = card.querySelectorAll('.form-input');
       inputs.forEach(input => input.value = '');
       const checkboxes = card.querySelectorAll('.toggle-switch-input');
       checkboxes.forEach(checkbox => checkbox.checked = false);
+      updateCardTitle(card, '');
+      saveDestinations();
     }
   }
   
@@ -146,9 +301,13 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
   
-  // Ensure at least one card exists on load
-  if (grid.children.length === 0) {
-    addDestination();
+  // Load destinations on page load
+  loadDestinations();
+  
+  // Set up event listeners for the default card if it exists
+  const defaultCard = grid.querySelector('.destination-card');
+  if (defaultCard) {
+    setupCardListeners(defaultCard);
   }
 });
 </script>

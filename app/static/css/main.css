@@ -1033,6 +1033,11 @@ select option:checked:hover,
     transform: translateX(26px);
 }
 
+/* Toggle Switch Thumb - Black Color */
+.toggle-switch-slider:before {
+    background-color: #000000 !important;
+}
+
 /* Layout Containers */
 .form-container {
     display: flex;
@@ -1558,4 +1563,57 @@ h3 {
     100% {
         left: 100%;
     }
+}
+
+/* Destination Cards - Max Width */
+.destination-card {
+    max-width: 300px;
+    width: 100%;
+}
+
+/* Setting Row - No Background */
+.setting-row-no-bg {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+}
+
+/* Ground Control Station - Paragraph Styling */
+.paragraph-secondary {
+    color: var(--text-secondary);
+}
+
+.paragraph-secondary-with-margin {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Card Title No Margin */
+.card-title-no-margin {
+    margin: 0;
+    }
+
+/* Button Styling */
+.btn-add-destination {
+    margin-top: var(--spacing-lg);
+}
+
+.remove-destination-btn {
+    margin-top: var(--spacing-md);
+    border: 1px solid #dc3545;
+}
+
+/* Fix Grid Gap - Higher Specificity */
+.grid.destinations-grid-no-gap {
+    gap: 20px !important;
+    justify-items: start;
+    grid-template-columns: repeat(auto-fill, 300px) !important;
+}
+
+/* Toggle Switch - Orange Color Override */
+.toggle-switch-input:checked+.toggle-switch-slider {
+    background-color: #ff9800 !important;
 }
